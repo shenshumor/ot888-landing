@@ -36,23 +36,22 @@ const OTContent = () => {
             for (let i = 0; i < reveals.length; i++) {
                 const windowHeight = window.innerHeight
                 const elementTop = reveals[i].getBoundingClientRect().top
-                const elementVisible = 100
+                const elementVisible = 50 // 縮小閾值，讓內容更容易出現
                 if (elementTop < windowHeight - elementVisible) {
                     reveals[i].classList.add("active")
                 }
             }
         }
+        
+        // 初次渲染後立即檢查
+        setTimeout(reveal, 200)
+        
         window.addEventListener("scroll", reveal)
-        // 延遲觸發以確保 Framer 渲染完成
-        const timer = setTimeout(reveal, 100)
-        return () => {
-            window.removeEventListener("scroll", reveal)
-            clearTimeout(timer)
-        }
+        return () => window.removeEventListener("scroll", reveal)
     }, [])
 
     return (
-        <div className="bg-[#050505] text-white font-sans overflow-x-hidden selection:bg-[#D1FF66] selection:text-black min-h-screen w-full">
+        <div className="bg-[#050505] text-white font-sans overflow-x-hidden selection:bg-[#D1FF66] selection:text-black min-h-screen w-full relative">
             <div className="glow-bg"></div>
 
             {/* 導航列 */}
@@ -81,9 +80,9 @@ const OTContent = () => {
                 </div>
             </nav>
 
-            {/* Hero Section - 響應式文字與間距 */}
+            {/* Hero Section */}
             <section className="relative pt-32 pb-16 md:pt-48 md:pb-24 px-4 flex flex-col items-center text-center max-w-7xl mx-auto">
-                <div className="reveal">
+                <div className="reveal active"> {/* 預設啟動，避免看不到 */}
                     <span className="inline-block px-4 py-1 rounded-full border border-[#D1FF66]/30 text-[#D1FF66] text-[10px] md:text-xs font-bold mb-6 tracking-widest uppercase bg-[#D1FF66]/5">
                         Exclusive Limited Offer
                     </span>
@@ -112,7 +111,7 @@ const OTContent = () => {
                     </div>
                 </div>
 
-                {/* 跑馬燈 - 調整移動速度 */}
+                {/* 跑馬燈 */}
                 <div className="w-full mt-20 md:mt-32 border-y border-white/5 py-4 md:py-6 overflow-hidden bg-white/[0.02]">
                     <div className="animate-scroll whitespace-nowrap">
                         {[1, 2, 3].map((i) => (
@@ -132,7 +131,7 @@ const OTContent = () => {
                 </div>
             </section>
 
-            {/* Features - 網格在手機版改為單欄 */}
+            {/* Features */}
             <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-32">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
                     <FeatureCard icon="bolt-lightning" title="5 分鐘極速提款" desc="業界領先的出金流程，申請後最快 5 分鐘內到帳，資金隨時掌控。" />
@@ -141,7 +140,7 @@ const OTContent = () => {
                 </div>
             </section>
 
-            {/* Games Grid - 調整手機版比例 */}
+            {/* Games Grid */}
             <section id="games" className="bg-white/[0.01] border-y border-white/5 py-16 md:py-32 px-4 sm:px-6">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center md:text-left mb-12 md:mb-16 reveal">
@@ -159,63 +158,3 @@ const OTContent = () => {
 
             {/* Footer */}
             <footer className="py-24 md:py-40 px-4 text-center">
-                <div className="reveal">
-                    <h2 className="text-4xl md:text-6xl font-extrabold mb-8 font-urbanist leading-tight">準備好開始贏錢了嗎？</h2>
-                    <a href="https://ot888.fun/?proxy=syccpe" className="bg-[#D1FF66] text-black text-xl font-bold px-12 py-5 rounded-2xl btn-glow inline-block mb-10">
-                        立即註冊領取 $368
-                    </a>
-                    <div className="text-gray-600 text-xs md:text-sm mt-10">
-                        <p>© 2024 OT 運寶. All Rights Reserved.</p>
-                    </div>
-                </div>
-            </footer>
-        </div>
-    )
-}
-
-const FeatureCard = ({ icon, title, desc }) => (
-    <div className="feature-card p-8 md:p-10 rounded-3xl bg-[#111] reveal border border-white/5 hover:border-[#D1FF66]/40 transition-all duration-300">
-        <div className="w-12 h-12 bg-[#D1FF66]/10 rounded-xl flex items-center justify-center mb-6">
-            <i className={`fa-solid fa-${icon} text-[#D1FF66] text-xl`}></i>
-        </div>
-        <h3 className="text-xl md:text-2xl font-bold mb-4">{title}</h3>
-        <p className="text-gray-500 text-sm md:text-base leading-relaxed">{desc}</p>
-    </div>
-)
-
-const GameCard = ({ label, title, img }) => (
-    <a href="https://ot888.fun/?proxy=syccpe" className="group relative aspect-[4/5] sm:aspect-[3/4] rounded-[2rem] overflow-hidden reveal">
-        <img src={img} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={title} />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent flex flex-col justify-end p-6 md:p-8">
-            <span className="text-[#D1FF66] text-xs font-bold uppercase tracking-widest mb-2 opacity-80">{label}</span>
-            <h4 className="text-xl md:text-2xl font-bold">{title}</h4>
-        </div>
-    </a>
-)
-
-const containerStyle: React.CSSProperties = {
-    width: "100%",
-    minHeight: "100vh",
-    backgroundColor: "#050505",
-}
-
-const customStyles = `
-    .font-urbanist { font-family: 'Urbanist', 'Noto Sans TC', sans-serif; }
-    .glow-bg {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: radial-gradient(circle at 50% -10%, rgba(209, 255, 102, 0.12), transparent 80%);
-        z-index: 0; pointer-events: none;
-    }
-    .btn-glow { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    .btn-glow:hover { box-shadow: 0 0 30px rgba(209, 255, 102, 0.4); transform: translateY(-3px); }
-    .btn-glow:active { transform: translateY(-1px); }
-
-    @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-    .animate-scroll { display: flex; width: max-content; animation: scroll 25s linear infinite; }
-    
-    .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.22, 1, 0.36, 1); }
-    .reveal.active { opacity: 1; transform: translateY(0); }
-
-    /* 平滑滾動 */
-    html { scroll-behavior: smooth; }
-`
